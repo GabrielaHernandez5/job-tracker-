@@ -50,7 +50,7 @@ mysql -u root -p job_tracker < schema.sql
 python app.py
 ```
 
-Open your browser at: **http://127.0.0.1:5000**
+Open your browser at: **http://localhost:5000**
 
 ---
 
