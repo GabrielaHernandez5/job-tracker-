@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}Dashboard{% endblock %} — JobTracker</title>
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}" />
+  <!-- Inter font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Open Graph / meta -->
+  <meta name="description" content="JobTracker — manage your job applications, contacts, and skill matches in one place." />
+  <meta property="og:title" content="JobTracker" />
+  <meta property="og:description" content="Track every application, interview, and offer in one clean dashboard." />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+
+<!-- ═══════════════ TOP NAVBAR ═══════════════ -->
+<nav class="navbar">
+
+  <!-- Brand -->
+  <a href="{{ url_for('dashboard') }}" class="brand">
+    <img src="{{ url_for('static', filename='favicon.svg') }}" width="22" height="22" alt="JobTracker logo" class="brand-icon" />
+    JobTracker
+  </a>
+
+  <!-- Nav links -->
+  <div class="nav-links">
+    <a href="{{ url_for('dashboard') }}"
+       class="nav-link {{ 'active' if request.endpoint == 'dashboard' }}">Board</a>
+
+    <a href="{{ url_for('companies') }}"
+       class="nav-link {{ 'active' if 'compan' in request.endpoint }}">Companies</a>
+
+    <a href="{{ url_for('jobs') }}"
+       class="nav-link {{ 'active' if 'job' in request.endpoint and 'match' not in request.endpoint }}">Jobs</a>
+
+    <a href="{{ url_for('applications') }}"
+       class="nav-link {{ 'active' if 'application' in request.endpoint }}">Applications</a>
+
+    <a href="{{ url_for('contacts') }}"
+       class="nav-link {{ 'active' if 'contact' in request.endpoint }}">Contacts</a>
+
+    <a href="{{ url_for('job_match') }}"
+       class="nav-link nav-accent {{ 'active' if request.endpoint == 'job_match' }}">Job Match ✦</a>
+  </div>
+
+  <!-- Right: search + avatar -->
+  <div class="nav-right">
+    <div class="search-bar">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+      <input type="text" placeholder="Search anything" id="globalSearch" autocomplete="off" />
+    </div>
+
+    <div class="nav-avatar" title="Hernandez">H</div>
+  </div>
+</nav>
+<!-- ═══════════════ / NAVBAR ═══════════════ -->
+
+<!-- Page wrapper -->
+<div class="page-wrapper">
+
+  <!-- Flash messages -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="flash-container">
+        {% for cat, msg in messages %}
+          <div class="flash flash-{{ cat }}">
+            <span>{{ msg }}</span>
+            <button class="flash-close" onclick="this.parentElement.remove()">&#x2715;</button>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  <!-- Main content -->
+  <div class="content">
+    {% block content %}{% endblock %}
+  </div>
+
+</div>
+
+<script>
+  // ── Auto-dismiss flash after 5s ────────────────────────────
+  setTimeout(() => {
+    document.querySelectorAll('.flash').forEach(el => {
+      el.style.transition = 'opacity .4s';
+      el.style.opacity = '0';
+      setTimeout(() => el.remove(), 400);
+    });
+  }, 5000);
+</script>
+
+</body>
+</html>

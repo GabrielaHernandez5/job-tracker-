@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+{% block title %}Jobs{% endblock %}
+
+{% block content %}
+
+{% if form_mode in ['add', 'edit'] %}
+<div class="form-card">
+  <h2 class="form-title">{% if form_mode == 'edit' %}✎ Edit Job{% else %}+ Add Job{% endif %}</h2>
+  <form method="POST">
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Company <span class="required">*</span></label>
+        <select name="company_id" required>
+          <option value="">-- Select Company --</option>
+          {% for c in companies %}
+          <option value="{{ c.id }}" {{ 'selected' if job and job.company_id == c.id }}>{{ c.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Job Title <span class="required">*</span></label>
+        <input type="text" name="title" required placeholder="e.g. Backend Engineer"
+               value="{{ job.title if job else '' }}" />
+      </div>
+      <div class="form-group">
+        <label>Salary Range</label>
+        <input type="text" name="salary_range" placeholder="e.g. $90k–$120k"
+               value="{{ job.salary_range if job else '' }}" />
+      </div>
+      <div class="form-group">
+        <label>Location</label>
+        <input type="text" name="location" placeholder="Remote / City, State"
+               value="{{ job.location if job else '' }}" />
+      </div>
+      <div class="form-group">
+        <label>Posted Date</label>
+        <input type="date" name="posted_date" value="{{ job.posted_date if job else '' }}" />
+      </div>
+      <div class="form-group">
+        <label>Required Skills <small>(comma-separated)</small></label>
+        <input type="text" name="required_skills" placeholder="Python, MySQL, Flask, HTML"
+               value="{{ job.required_skills if job else '' }}" />
+      </div>
+    </div>
+    <div class="form-group" style="margin-top:14px">
+      <label>Description</label>
+      <textarea name="description" rows="4" placeholder="Job description...">{{ job.description if job else '' }}</textarea>
+    </div>
+    <div class="form-actions">
+      <button type="submit" class="btn-primary">{% if form_mode == 'edit' %}Save Changes{% else %}Add Job{% endif %}</button>
+      <a href="{{ url_for('jobs') }}" class="btn-secondary">Cancel</a>
+    </div>
+  </form>
+</div>
+<hr class="section-divider" />
+{% endif %}
+
+<div class="page-header">
+  <div class="page-header-left">
+    <h1 class="page-title">Jobs</h1>
+    <p class="page-subtitle">{{ jobs | length }} positions tracked</p>
+  </div>
+  {% if form_mode not in ['add', 'edit'] %}
+  <a href="{{ url_for('add_job') }}" class="btn-primary">+ Add Job</a>
+  {% endif %}
+</div>
+
+{% if jobs %}
+<div class="table-wrapper">
+  <table class="data-table">
+    <thead>
+      <tr><th>#</th><th>Title</th><th>Company</th><th>Location</th><th>Salary</th><th>Skills</th><th>Posted</th><th>Actions</th></tr>
+    </thead>
+    <tbody>
+      {% set logo_colors = ['purple','teal','amber','blue','pink','green'] %}
+      {% set known_logos = {'google': 'google.svg', 'microsoft': 'microsoft.svg', 'shopify': 'shopify.svg'} %}
+      {% for j in jobs %}
+      {% set logo_cls = logo_colors[loop.index0 % logo_colors|length] %}
+      {% set logo_key = j.company_name.lower() %}
+      <tr>
+        <td style="color:var(--text-muted);font-size:.8rem">{{ loop.index }}</td>
+        <td><strong>{{ j.title }}</strong></td>
+        <td>
+          <div class="company-logo-cell">
+            {% if logo_key in known_logos %}
+              <img src="{{ url_for('static', filename='assets/logos/' + known_logos[logo_key]) }}" alt="{{ j.company_name }}" class="company-logo-img" />
+            {% else %}
+              <div class="company-logo-sm jcard-logo--{{ logo_cls }}">{{ j.company_name[0] | upper }}</div>
+            {% endif %}
+            {{ j.company_name }}
+          </div>
+        </td>
+        <td style="color:var(--text-secondary)">{{ j.location or '—' }}</td>
+        <td style="color:var(--text-secondary)">{{ j.salary_range or '—' }}</td>
+        <td class="skills-cell">{{ j.required_skills or '—' }}</td>
+        <td style="color:var(--text-muted);font-size:.82rem">{{ j.posted_date or '—' }}</td>
+        <td class="action-cell">
+          <a href="{{ url_for('edit_job', id=j.id) }}" class="btn-edit">Edit</a>
+          <form method="POST" action="{{ url_for('delete_job', id=j.id) }}" style="display:inline"
+                onsubmit="return confirm('Delete this job and its applications?')">
+            <button type="submit" class="btn-delete">Delete</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<div class="empty-state">
+  <p>No jobs added yet.</p>
+  <a href="{{ url_for('add_job') }}" class="btn-primary">+ Add your first job</a>
+</div>
+{% endif %}
+{% endblock %}
