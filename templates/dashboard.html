@@ -1,0 +1,194 @@
+{% extends 'base.html' %}
+{% block title %}Board{% endblock %}
+
+{% block content %}
+
+<!-- Welcome -->
+<div class="welcome-banner">
+  <h1>Welcome Back, Hernandez</h1>
+</div>
+
+<!-- Stat Cards -->
+<div class="stats-grid">
+  <a href="{{ url_for('companies') }}" class="stat-card stat-card--companies">
+    <div class="stat-card-top">
+      <div class="stat-icon-wrap">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+        </svg>
+      </div>
+    </div>
+    <div>
+      <div class="stat-number">{{ stats.companies }}</div>
+      <div class="stat-label">Companies</div>
+    </div>
+  </a>
+
+  <a href="{{ url_for('jobs') }}" class="stat-card stat-card--jobs">
+    <div class="stat-card-top">
+      <div class="stat-icon-wrap">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/>
+        </svg>
+      </div>
+    </div>
+    <div>
+      <div class="stat-number">{{ stats.jobs }}</div>
+      <div class="stat-label">Jobs Tracked</div>
+    </div>
+  </a>
+
+  <a href="{{ url_for('applications') }}" class="stat-card stat-card--apps">
+    <div class="stat-card-top">
+      <div class="stat-icon-wrap">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
+        </svg>
+      </div>
+    </div>
+    <div>
+      <div class="stat-number">{{ stats.applications }}</div>
+      <div class="stat-label">Applications</div>
+    </div>
+  </a>
+
+  <a href="{{ url_for('contacts') }}" class="stat-card stat-card--contacts">
+    <div class="stat-card-top">
+      <div class="stat-icon-wrap">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+        </svg>
+      </div>
+    </div>
+    <div>
+      <div class="stat-number">{{ stats.contacts }}</div>
+      <div class="stat-label">Contacts</div>
+    </div>
+  </a>
+</div>
+
+<!-- Kanban Board — Applications by Status (matching screenshot columns) -->
+{% set logo_colors = ['purple','teal','amber','blue','pink','green','purple','teal','amber','blue'] %}
+{% set known_logos = {'google': 'google.svg', 'microsoft': 'microsoft.svg', 'shopify': 'shopify.svg'} %}
+{% set status_cols = [
+  ('Applied',    'col-applied',    '#60a5fa'),
+  ('Interview',  'col-interview',  '#fbbf24'),
+  ('Offer',      'col-offer',      '#00c4a0'),
+  ('Rejected',   'col-rejected',   '#f87171'),
+  ('Withdrawn',  'col-withdrawn',  '#94a3b8'),
+] %}
+
+{% if stats.recent %}
+<div style="margin-bottom:10px">
+  <span style="font-size:.78rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted)">APPLICATION PIPELINE</span>
+</div>
+<div class="kanban-board">
+  {% for status_name, col_class, col_color in status_cols %}
+    {% set col_apps = stats.recent | selectattr('status', 'equalto', status_name) | list %}
+    {% set col_count = stats.by_status | selectattr('status', 'equalto', status_name) | map(attribute='cnt') | first | default(0) %}
+    <div class="kanban-col">
+      <div class="kanban-col-header">
+        <div class="kanban-col-title">
+          <span class="kanban-dot" style="background:{{ col_color }}"></span>
+          {{ status_name }} jobs
+          <span class="kanban-count">{{ col_count }}</span>
+        </div>
+        <a href="{{ url_for('add_application') }}" class="kanban-add" title="Log application">+</a>
+      </div>
+      <div class="kanban-cards">
+        {% for a in col_apps %}
+        {% set first_letter = a.company_name[0] | upper if a.company_name else '?' %}
+        {% set logo_cls = logo_colors[loop.index0 % logo_colors|length] %}
+        {% set logo_key = a.company_name.lower() if a.company_name else '' %}
+        <div class="jcard">
+          <div class="jcard-info">
+            <div class="jcard-company">{{ a.company_name }}</div>
+            <div class="jcard-title">{{ a.job_title }}</div>
+            <div class="jcard-date">{{ a.applied_date }}</div>
+          </div>
+          {% if logo_key in known_logos %}
+            <img src="{{ url_for('static', filename='assets/logos/' + known_logos[logo_key]) }}" alt="{{ a.company_name }}" class="jcard-logo-img" />
+          {% else %}
+            <div class="jcard-logo jcard-logo--{{ logo_cls }}">{{ first_letter }}</div>
+          {% endif %}
+        </div>
+        {% else %}
+        <div style="padding:12px 4px;font-size:.78rem;color:var(--text-muted);text-align:center">No entries</div>
+        {% endfor %}
+      </div>
+    </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<!-- Bottom row: status table + quick actions -->
+<div class="dashboard-grid">
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Status Breakdown</span>
+    </div>
+    <div class="card-body">
+      {% if stats.by_status %}
+        <table class="data-table">
+          <thead><tr><th>Status</th><th>Count</th></tr></thead>
+          <tbody>
+            {% for row in stats.by_status %}
+            <tr>
+              <td><span class="badge badge-{{ row.status | lower }}">{{ row.status }}</span></td>
+              <td><strong>{{ row.cnt }}</strong></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <p class="empty-msg">No applications yet. <a href="{{ url_for('add_application') }}">Log one →</a></p>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Recent Applications</span>
+      <a href="{{ url_for('applications') }}" class="btn-secondary" style="font-size:.78rem;padding:5px 12px">View all</a>
+    </div>
+    <div class="card-body">
+      {% if stats.recent %}
+        <table class="data-table">
+          <thead>
+            <tr><th>Job</th><th>Company</th><th>Date</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            {% for a in stats.recent %}
+            <tr>
+              <td><strong>{{ a.job_title }}</strong></td>
+              <td>{{ a.company_name }}</td>
+              <td style="color:var(--text-muted);font-size:.82rem">{{ a.applied_date }}</td>
+              <td><span class="badge badge-{{ a.status | lower }}">{{ a.status }}</span></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <p class="empty-msg">No recent applications.</p>
+      {% endif %}
+    </div>
+  </div>
+
+</div>
+
+<!-- Quick Actions -->
+<div class="quick-actions">
+  <span class="card-title">Quick Actions</span>
+  <div class="action-grid">
+    <a href="{{ url_for('add_company') }}"     class="action-btn">+ Company</a>
+    <a href="{{ url_for('add_job') }}"         class="action-btn">+ Job</a>
+    <a href="{{ url_for('add_application') }}" class="action-btn">+ Application</a>
+    <a href="{{ url_for('add_contact') }}"     class="action-btn">+ Contact</a>
+    <a href="{{ url_for('job_match') }}"       class="action-btn highlight-btn">✦ Job Match</a>
+  </div>
+</div>
+
+{% endblock %}
