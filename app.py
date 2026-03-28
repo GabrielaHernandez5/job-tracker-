@@ -15,6 +15,27 @@ app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", "dev-secret-key-change-in-production")
 
 
+# ── Dynamic company logo helper ────────────────────────────────
+# Checks static/assets/logos/ for a matching file.
+# Supports .svg and .png. Just drop a file named <company>.svg
+# (lowercase, spaces replaced with hyphens) and it auto-resolves.
+LOGOS_DIR = os.path.join(os.path.dirname(__file__), "static", "assets", "logos")
+
+def _company_logo(company_name: str):
+    """Return the static path string for a company logo, or None."""
+    if not company_name:
+        return None
+    slug = company_name.strip().lower().replace(" ", "-")
+    for ext in ("svg", "png"):
+        if os.path.exists(os.path.join(LOGOS_DIR, f"{slug}.{ext}")):
+            return f"assets/logos/{slug}.{ext}"
+    return None
+
+@app.context_processor
+def inject_logo_helper():
+    return dict(company_logo=_company_logo)
+
+
 # ══════════════════════════════════════════════════════════════════
 # DASHBOARD
 # ══════════════════════════════════════════════════════════════════

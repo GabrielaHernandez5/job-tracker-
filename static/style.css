@@ -747,23 +747,23 @@ button { font-family: inherit; cursor: pointer; }
 ═══════════════════════════════════════════════════════════════ */
 /* Inline logo in table rows */
 .company-logo-img {
-  width: 28px;
+  width: 64px;
   height: 28px;
   object-fit: contain;
   border-radius: 6px;
   background: #fff;
-  padding: 3px;
+  padding: 3px 6px;
   flex-shrink: 0;
 }
 
 /* Logo in Kanban cards */
 .jcard-logo-img {
-  width: 36px;
-  height: 36px;
+  width: 56px;
+  height: 28px;
   object-fit: contain;
-  border-radius: 8px;
+  border-radius: 6px;
   background: #fff;
-  padding: 4px;
+  padding: 3px 6px;
   flex-shrink: 0;
   align-self: flex-start;
 }

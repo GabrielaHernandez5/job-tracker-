@@ -1,8 +1,8 @@
 # AI Usage Documentation — Job Application Tracker
 
-**Developer:** Sam
-**AI Tools Used:** Claude (claude.ai) — primary co-developer | ChatGPT — secondary debugging
-**Methodology:** Iterative co-development. AI was used as a pair programmer — not to generate entire features blindly, but to reason through problems, validate approaches, accelerate boilerplate, and diagnose bugs. Every AI output was reviewed, tested, and adapted.
+**Developer:** Gabriela Hernandez
+**AI Tools Used:** Claude (claude.ai) — primary co-developer and co-designer | ChatGPT — secondary debugging
+**Methodology:** Iterative co-development across two disciplines — software engineering and production design. AI was used as a pair programmer for the application layer, and as a co-director and scriptwriter for the project's video demonstration. In both domains, the approach was identical: AI was given precise, reasoned prompts, and every output was reviewed, critiqued, and manually refined before use. Nothing was accepted verbatim.
 
 ---
 
@@ -237,6 +237,63 @@ stats["by_status"] = cursor.fetchall()
 
 ---
 
+---
+
+## Iteration 8 — Director's Script & Takes Planning (AI as Co-Director)
+
+### Problem I was thinking through
+The project required a screen recording demonstration covering every functional area of the application. I needed to plan the recording with enough structure that I could execute it efficiently without stopping to think — but informal enough that the narration would sound natural rather than rehearsed. I also needed every CRUD operation, the dashboard, and the Job Match feature represented in a logical flow, not just a random walkthrough.
+
+### Prompt I used
+> "I need to plan a screen recording of my job tracker application that demonstrates all the required features — Companies CRUD, Jobs CRUD, Applications CRUD with status tracking, Contacts CRUD, the Dashboard Kanban board, and the Job Match feature. The recording should tell a story, not just click through pages.
+>
+> Help me plan it as a director's script — numbered takes, each with the page URL, estimated duration, exact screen actions (what to click, hover, type), and the spoken narration alongside it. The tone should be informal and conversational, like I'm walking a friend through something I built. I also need a pre-recording checklist so I don't forget setup steps."
+
+### What AI designed (and I directed)
+Claude structured 13 takes with a clear narrative arc: opening on the dashboard (establishing shot), touring the navbar, demonstrating CRUD progressively table by table — Companies first since Jobs and Applications depend on it — culminating in Job Match as the feature highlight, then closing back on the dashboard to show everything reflected in real time. This sequencing was intentional and logical, not arbitrary.
+
+Each take included:
+- The specific page URL to navigate to
+- Estimated duration
+- Granular screen actions (e.g., "hover Google logo, then Microsoft, then Shopify — in that order")
+- The exact narration to deliver alongside those actions
+
+### My editorial modifications
+The script AI produced was structurally sound but required directorial editing before it was usable:
+
+- **Reordered Takes 3 and 4:** AI originally placed "Add Company" before "View Companies." I reversed this — always show the existing state of the application before demonstrating how to change it. Viewers need context before action.
+- **Added Take 2 (Navbar Tour):** AI jumped directly from the dashboard to the Companies page. I inserted a dedicated navbar take because the navigation design is a feature in itself, and hovering each link establishes the app's scope before diving into any section.
+- **Extended Take 7 (Applications):** AI's draft narration for the Applications page didn't explain *why* the status field matters to the dashboard. I rewrote this narration to explicitly connect the status update to the Kanban board update, making the database-UI relationship visible to the viewer.
+- **Added the Pre-Recording Checklist:** AI did not include this. I added it based on practical experience — having seed data loaded, browser zoom at 100%, and flash messages cleared are details that kill a recording if missed, not afterthoughts.
+
+---
+
+## Iteration 9 — Audio Narration Script (AI as Scriptwriter, Human as Editor)
+
+### Problem I was thinking through
+The director's script contains stage directions and metadata mixed with the spoken words. For AI voice generation, I needed a clean, standalone narration — no brackets, no take numbers, no action notes. Just flowing prose that an AI voice agent could read naturally from start to finish. The challenge was making it feel like continuous storytelling rather than a list of feature descriptions.
+
+### Prompt I used
+> "Extract and rewrite the spoken narration from the director's script into a single continuous audio script for AI voice generation. The narration should flow as a connected story — not as 13 separate takes. Transitions between topics should feel natural, not like page changes. The tone is informal and confident — someone who genuinely built this and is proud of it.
+>
+> At the top, include a brief instruction note for the AI voice agent specifying: female voice, warm and conversational tone, moderate pace, brief natural pauses between paragraphs, no dramatic emphasis."
+
+### What AI produced (and I edited)
+Claude merged the 13 take narrations into a single continuous script, writing transitional sentences between sections that don't appear in the director's version. The result reads as one coherent monologue rather than a series of feature descriptions.
+
+Key transitions AI wrote that I approved:
+- The bridge from Companies to Jobs ("Moving on to Jobs — this page stores all the actual positions...")
+- The setup for Job Match ("Now — Job Match. This is the feature that makes the app genuinely useful *beyond* just storing data.")
+- The closing full-circle ("And to bring it all together — I go back to the dashboard, and everything I've done is reflected here in real time.")
+
+### My editorial modifications
+- **Rewrote the Applications narration:** AI's draft explained the status field but didn't convey why the real-time dashboard update mattered. I rewrote this paragraph to make the database-to-UI connection explicit and emphasise it as a deliberate architectural choice, not a side effect.
+- **Strengthened the Job Match conclusion:** AI ended the Job Match section with a description of the output. I added a sentence explaining the underlying algorithm — set intersection, O(n+m), pure Python — because the recording is also a technical demonstration, and that detail distinguishes the feature from a simple search.
+- **Removed the closing take number reference:** AI's first draft ended with "That's Take 13." I removed all take structure from the audio script to keep it continuous.
+- **Added the AI voice agent instruction note:** Specifying voice gender, tone, pace, and pause behaviour is not something AI suggested — I added this based on experience with voice generation tools and the difference it makes in output quality.
+
+---
+
 ## Debugging Sessions (AI as Diagnostic Partner)
 
 ### Bug 1 — Template rendering wrong route as active
@@ -267,17 +324,31 @@ class="{{ 'active' if 'job' in request.endpoint and 'match' not in request.endpo
 
 ## Summary
 
+### Software Engineering
+
 | Feature | AI Contribution | My Contribution |
 |---|---|---|
-| Database schema | Generated structure and FK logic | ENUM for status, seed data, tested in MySQL |
-| `database.py` architecture | Suggested Pattern B (separation of concerns) | Adopted it, fixed `dictionary=True` cursor bug |
+| Database schema | Generated structure and FK logic | ENUM for status, seed data, tested in MySQL Workbench |
+| `database.py` architecture | Suggested separation of concerns (Pattern B) | Adopted it, caught and fixed `dictionary=True` cursor bug |
 | CRUD routes | Generated POST/Redirect/GET pattern | Added `url_for()`, safety redirects for missing records |
-| Form edge cases | Explained `''` vs `NULL` distinction | Applied `or None` pattern across all 4 tables |
-| Job Match algorithm | Confirmed set-intersection, handled 4 edge cases | Added `missing_skills`, `sorted()`, integrated into UI |
-| Jinja2 edit forms | Generated conditional value/selected syntax | Applied guard for `None` company on Add route |
-| Dashboard query | Explained GROUP BY, advised against over-engineering | Added recent applications query independently |
-| Debugging | Identified root causes for all 3 bugs above | Caught symptoms, formed precise diagnostic prompts |
+| Form edge cases | Explained `''` vs `NULL` distinction in MySQL | Applied `or None` pattern consistently across all 4 tables |
+| Job Match algorithm | Confirmed set-intersection approach, handled 4 edge cases | Added `missing_skills`, `sorted()` output, integrated into UI |
+| Jinja2 edit forms | Generated conditional `value`/`selected` syntax | Applied `None` guard for Add route, tested all form states |
+| Dashboard query | Explained `GROUP BY`, advised against premature optimisation | Added recent applications query independently |
+| Debugging | Identified root causes for all 3 bugs documented above | Observed symptoms, formed precise diagnostic prompts |
+
+### Production Design
+
+| Deliverable | AI Contribution | My Contribution |
+|---|---|---|
+| Director's Script (13 takes) | Structured takes, wrote narration, planned screen actions | Reordered takes, inserted navbar tour, rewrote Applications narration, added pre-recording checklist |
+| Audio Narration Script | Merged 13 takes into continuous monologue, wrote transitions | Rewrote Applications and Job Match paragraphs, removed all take structure, added AI voice agent instruction |
+| Recording Cheat Sheet | N/A — I specified the format and content | Designed the layout, specified all sample data, added dashboard state reference table |
+
+---
 
 ## Key Takeaway
 
-The most valuable thing AI did in this project wasn't writing code — it was **explaining why** a certain approach is correct so I could make informed decisions. I never accepted output without running it, reading it line by line, and asking follow-up questions when something wasn't clear. AI accelerated development significantly, but the design decisions, the bug reports, and the final call on every piece of code were mine.
+AI served two distinct roles in this project. As a **co-developer**, it accelerated engineering by explaining *why* a pattern is correct — not just generating code to copy. As a **co-designer**, it translated a production brief into structured, usable assets (scripts, takes, narration) that I then directed and edited.
+
+In both roles, the same principle applied: AI output is a starting point, not a final product. Every piece of generated code was read line by line, tested, and adapted. Every line of narration was reviewed against the actual application and rewritten where it missed the point. The decisions — architectural, editorial, and directorial — were mine throughout.

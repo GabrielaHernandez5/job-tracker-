@@ -4,6 +4,11 @@ A full-stack web application to track job applications, companies, contacts, and
 
 **Stack:** Python 3 + Flask | MySQL | HTML/CSS
 
+## Demo Video
+
+<video src="Job%20Tracker%20.mp4" controls="controls" width="100%">
+</video>
+
 ---
 
 ## Setup Instructions

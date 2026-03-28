@@ -71,7 +71,6 @@
 
 <!-- Kanban Board — Applications by Status (matching screenshot columns) -->
 {% set logo_colors = ['purple','teal','amber','blue','pink','green','purple','teal','amber','blue'] %}
-{% set known_logos = {'google': 'google.svg', 'microsoft': 'microsoft.svg', 'shopify': 'shopify.svg'} %}
 {% set status_cols = [
   ('Applied',    'col-applied',    '#60a5fa'),
   ('Interview',  'col-interview',  '#fbbf24'),
@@ -101,16 +100,16 @@
         {% for a in col_apps %}
         {% set first_letter = a.company_name[0] | upper if a.company_name else '?' %}
         {% set logo_cls = logo_colors[loop.index0 % logo_colors|length] %}
-        {% set logo_key = a.company_name.lower() if a.company_name else '' %}
         <div class="jcard">
           <div class="jcard-info">
             <div class="jcard-company">{{ a.company_name }}</div>
             <div class="jcard-title">{{ a.job_title }}</div>
             <div class="jcard-date">{{ a.applied_date }}</div>
           </div>
-          {% if logo_key in known_logos %}
-            <img src="{{ url_for('static', filename='assets/logos/' + known_logos[logo_key]) }}" alt="{{ a.company_name }}" class="jcard-logo-img" />
-          {% else %}
+          {%- set _logo = company_logo(a.company_name) %}
+          {%- if _logo %}
+            <img src="{{ url_for('static', filename=_logo) }}" alt="{{ a.company_name }}" class="jcard-logo-img" />
+          {%- else %}
             <div class="jcard-logo jcard-logo--{{ logo_cls }}">{{ first_letter }}</div>
           {% endif %}
         </div>

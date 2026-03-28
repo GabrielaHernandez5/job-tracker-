@@ -68,17 +68,16 @@
     </thead>
     <tbody>
       {% set logo_colors = ['purple','teal','amber','blue','pink','green'] %}
-      {% set known_logos = {'google': 'google.svg', 'microsoft': 'microsoft.svg', 'shopify': 'shopify.svg'} %}
       {% for c in companies %}
       {% set logo_cls = logo_colors[loop.index0 % logo_colors|length] %}
-      {% set logo_key = c.name.lower() %}
       <tr>
         <td style="color:var(--text-muted);font-size:.8rem">{{ loop.index }}</td>
         <td>
           <div class="company-logo-cell">
-            {% if logo_key in known_logos %}
-              <img src="{{ url_for('static', filename='assets/logos/' + known_logos[logo_key]) }}" alt="{{ c.name }}" class="company-logo-img" />
-            {% else %}
+            {%- set _logo = company_logo(c.name) %}
+            {%- if _logo %}
+              <img src="{{ url_for('static', filename=_logo) }}" alt="{{ c.name }}" class="company-logo-img" />
+            {%- else %}
               <div class="company-logo-sm jcard-logo--{{ logo_cls }}">{{ c.name[0] | upper }}</div>
             {% endif %}
             <strong>{{ c.name }}</strong>

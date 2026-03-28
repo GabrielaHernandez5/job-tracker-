@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 90" width="300" height="90">
+  <rect width="300" height="90" fill="white" rx="6"/>
+
+  <!-- amazon wordmark using paths (font-independent) -->
+  <!-- 'a' -->
+  <path d="M28 30 Q28 22 36 22 Q44 22 44 30 L44 58 L36 58 Q28 58 28 50 Q28 42 36 42 L44 42" fill="none" stroke="#232F3E" stroke-width="5" stroke-linecap="round"/>
+  <!-- 'm' -->
+  <path d="M50 42 L50 58 M50 42 Q50 34 57 34 Q64 34 64 42 L64 58 M64 42 Q64 34 71 34 Q78 34 78 42 L78 58" fill="none" stroke="#232F3E" stroke-width="5" stroke-linecap="round"/>
+  <!-- 'a' -->
+  <path d="M84 38 Q84 30 92 30 Q100 30 100 38 L100 58 L92 58 Q84 58 84 50 Q84 42 92 42 L100 42" fill="none" stroke="#232F3E" stroke-width="5" stroke-linecap="round"/>
+  <!-- 'z' -->
+  <path d="M106 32 L124 32 L106 58 L124 58" fill="none" stroke="#232F3E" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- 'o' -->
+  <ellipse cx="138" cy="46" rx="10" ry="13" fill="none" stroke="#232F3E" stroke-width="5"/>
+  <!-- 'n' -->
+  <path d="M154 58 L154 34 Q154 26 162 26 Q170 26 170 34 L170 58" fill="none" stroke="#232F3E" stroke-width="5" stroke-linecap="round"/>
+
+  <!-- orange smile arrow (a → z) -->
+  <path d="M32 68 Q101 84 168 68" fill="none" stroke="#FF9900" stroke-width="5" stroke-linecap="round"/>
+  <!-- arrowhead -->
+  <path d="M160 64 L170 69 L160 74" fill="none" stroke="#FF9900" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
