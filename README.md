@@ -6,7 +6,7 @@ A full-stack web application to track job applications, companies, contacts, and
 
 ## Demo Video
 
-<video src="Job%20Tracker%20.mp4" controls="controls" width="100%">
+<video src="Job%20Tracker_.mp4" controls="controls" width="100%">
 </video>
 
 ---
