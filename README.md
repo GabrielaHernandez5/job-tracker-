@@ -6,8 +6,10 @@ A full-stack web application to track job applications, companies, contacts, and
 
 ## Demo Video
 
-<video src="Job%20Tracker_.mp4" controls="controls" width="100%">
+<video src="https://github.com/GabrielaHernandez5/job-tracker-/raw/main/Job%20Tracker_.mp4" controls="controls" width="100%">
 </video>
+
+*[Direct Link to Demo Video](https://github.com/GabrielaHernandez5/job-tracker-/raw/main/Job%20Tracker_.mp4)*
 
 ---
 
